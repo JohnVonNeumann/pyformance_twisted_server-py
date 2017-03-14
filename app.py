@@ -1,19 +1,24 @@
 from twisted.internet import reactor
 from twisted.web.server import Site
 from twisted.web.resource import Resource
-from pyformance.pyformance.meters import Counter, Histogram, Meter, Timer
-from pyformance.pyformance.registry import MetricsRegistry
+from pyformance.meters import Counter, Histogram, Meter, Timer
+from pyformance.registry import MetricsRegistry
 
 class RequestHandler(Resource):
 
     # can't find much on isLeaf
     isLeaf = True
     def render_GET(self, request):
+        counter = metricsRegistry.counter("hello_called")
+        counter.inc()
+        print(counter.get_count())
         request.setResponseCode(200)
         return "HelloWorld"
 
 if __name__ == '__main__':
     # Load up twisted web
+    global metricsRegistry
+    metricsRegistry = MetricsRegistry()
     try:
         resource = RequestHandler()
         factory = Site(resource)
