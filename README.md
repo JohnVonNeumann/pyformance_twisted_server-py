@@ -13,4 +13,3 @@
 
 * Learnt a lot about sync and async programming with this.
 > http://krondo.com/slow-poetry-and-the-apocalypse/
-

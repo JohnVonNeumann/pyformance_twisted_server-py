@@ -12,12 +12,15 @@ class RequestHandler(Resource):
     # has child nodes
     isLeaf = True
 
+    # run server then go to: http://localhost:8001/?world_size=n
+    # n being a number of your choice
     def render_GET(self, request):
-        counter = metricsRegistry.counter("hello_called")
-        counter.inc()
-        print(counter.get_count())
+        counter = metricsRegistry.counter("hello_called").inc()
+        world_size = request.args["world_size"][0]
+        histogram = metricsRegistry.histogram("world_size");
+        histogram.add(int(world_size))
         request.setResponseCode(200)
-        return "HelloWorld"
+        return str(metricsRegistry._get_histogram_metrics("world_size"))
 
 if __name__ == '__main__':
     # Load up twisted web
